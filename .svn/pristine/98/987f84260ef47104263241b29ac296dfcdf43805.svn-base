@@ -1,0 +1,108 @@
+<template>
+  <div class="tabs-box clearfix">
+    <el-button type="text" class="fl" @click="closeAll">全部关闭</el-button>
+    <el-dropdown class="fr" @command="handleCommand">
+      <span class="el-dropdown-link">
+        <i class="el-icon-caret-bottom el-icon--right"></i>
+      </span>
+      <!-- 下拉菜单 -->
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item :command="item.command" v-for="item,index in tabBtns" :key="index">{{item.text}}</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+    <el-tabs type="card" v-model="curRoute" @tab-remove="closeTab" @tab-click="clickTab">
+      <el-tab-pane
+        :label="item.label"
+        :name="item.route"
+        v-for="item,index in tabs"
+        :key="index"
+        :closable="index !== 0">
+      </el-tab-pane>
+    </el-tabs>
+    <keep-alive>
+      <router-view />
+    </keep-alive>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'v-tabs',
+  props: {
+    route: Object,
+    tabs: Array
+  },
+  data () {
+    return {
+      tabBtns: [
+        {text: '关闭当前', command: 'current'},
+        {text: '关闭其他', command: 'others'},
+        {text: '关闭所有', command: 'all'}
+      ],
+      curRoute: this.route.route || ''
+    }
+  },
+  watch: {
+    route (val) {
+      this.curRoute = val.route
+    }
+  },
+  methods: {
+    // 切换tab
+    clickTab (tab) {
+      this.$emit('change', 'setTab', tab.index)
+      this.$router.push(tab.name)
+    },
+    // 关闭当前tab
+    closeTab (route = this.curRoute) {
+      let index = this.findTab(route)
+      if (index !== 0) {
+        let len = this.tabs.length
+        let next = index + 1 < len ? index + 1 : index - 1
+        this.$emit('change', 'setTab', next)
+        this.$emit('change', 'rmTab', index)
+        this.$nextTick(() => {
+          this.$router.push(this.curRoute)
+        })
+      }
+    },
+    // 关闭其他tab
+    closeOthers () {
+      let index = this.findTab(this.curRoute)
+      this.$emit('change', 'rmOthers', index)
+      this.$nextTick(() => {
+        this.$router.push(this.curRoute)
+      })
+    },
+    // 关闭所有tab
+    closeAll () {
+      this.$emit('change', 'rmAll')
+      this.$router.push('main')
+    },
+    // tab 指令
+    handleCommand (command) {
+      switch (command) {
+        case 'current':
+          this.closeTab()
+          break
+        case 'others':
+          this.closeOthers()
+          break
+        case 'all':
+          this.closeAll()
+          break
+      }
+    },
+    findTab (route) {
+      let [index, i, len] = [-1, 0, this.tabs.length]
+      for (; i < len; i++) {
+        if (this.tabs[i].route === route) {
+          index = i
+          break
+        }
+      }
+      return index
+    }
+  }
+}
+</script>
