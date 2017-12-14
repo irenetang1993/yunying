@@ -9,9 +9,6 @@ import router from './router'
 import ElementUI from 'element-ui'
 import axios from 'axios'
 import qs from 'qs'
-import localStorage from 'vue-localstorage'
-import sessionStorage from 'vue-sessionstorage'
-import cookie from 'js-cookie'
 
 // 引用全局组件
 import Table from '@/components/common/Table'
@@ -20,9 +17,11 @@ import Form from '@/components/common/Form'
 // 引用插件
 import utils from '@/utils'
 import ajax from '@/utils/ajax'
-import vcookie from '@/utils/cookie'
 import storage from '@/utils/storage'
 import api from '@/api'
+
+// 引用混合
+import tabMixin from '@/mixins/tab'
 
 // 引用样式
 import 'normalize.css'
@@ -35,10 +34,7 @@ import '@/assets/css/style.less'
 [
   [ElementUI],
   [ajax, axios, qs],
-  [localStorage],
-  [sessionStorage],
-  [vcookie, cookie],
-  [storage, cookie],
+  [storage],
   [utils],
   [api]
 ].forEach(args => Vue.use.apply(Vue, args))
@@ -52,6 +48,7 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  mixins: [tabMixin],
   router,
   template: '<App/>',
   components: { App }

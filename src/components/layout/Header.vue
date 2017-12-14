@@ -23,8 +23,8 @@
 export default {
   name: 'v-header',
   data () {
-    // this.$cookie.set('username', '测试员')
-    let userName = this.$cookie.get('username')
+    // this.$storage.set('username', '测试员')
+    let userName = this.$storage.get('username')
     return {
       subMenus: [
         {
@@ -61,7 +61,7 @@ export default {
         label,
         route
       }
-      this.$emit('change', tab)
+      this.$root.curTab = tab
       this.$router.push(route)
     },
     // 退出登录 指令
@@ -92,7 +92,7 @@ export default {
           this.$router.push('main')
           break
         case 'feedback':
-          this.$emit('show')
+          this.$emit('input', true)
           break
       }
     }

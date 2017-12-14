@@ -4,10 +4,7 @@
       <el-radio-button :label="false">展开</el-radio-button>
       <el-radio-button :label="true">收起</el-radio-button>
     </el-radio-group>
-    <el-menu class="el-menu-vertical-demo"
-      :class="{ 'is-collapse': !isCollapse }"
-      :collapse="true"
-      :default-active="currentRoute">
+    <el-menu class="el-menu-vertical-demo" :class="{ 'is-collapse': !isCollapse }" :collapse="true">
       <template v-for="(menu, index) in menus">
         <el-submenu v-if="menu.children" :index="index.toString()" :key="index">
           <template slot="title">
@@ -15,7 +12,7 @@
             <i v-if="!isCollapse">{{ menu.label }}</i>
           </template>
           <template v-for="(subMenu, index) in menu.children">
-            <el-submenu v-if="subMenu.children" :key="index">
+            <el-submenu v-if="subMenu.children" :index="index.toString()" :key="index">
               <span slot="title">{{ subMenu.label }}</span>
               <el-menu-item v-for="(item, index) in subMenu.children"
                 @click="onClick(item)"
@@ -49,11 +46,6 @@ export default {
     return {
       isCollapse: false,
       menus
-    }
-  },
-  computed: {
-    currentRoute () {
-      return this.$router.path
     }
   },
   methods: {
